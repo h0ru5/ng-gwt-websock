@@ -58,9 +58,9 @@ public class WebsockService {
 				public void onOpen() {}
 
 				@Override
-				public void onMessage(String msg) {
-					jsfunc.onSuccess(msg);
-				}
+				public native void onMessage(String msg) /*-{
+					jsfunc.@com.google.gwt.core.client.Callback::onSuccess(Ljava/lang/String;)(msg);
+				}-*/;
 
 				@Override
 				public void onClose() {}
@@ -77,9 +77,9 @@ public class WebsockService {
 			WebsocketListener listener = new WebsocketListener() {
 
 				@Override
-				public void onOpen() {
-					jsfunc.onSuccess(null);
-				}
+				public native void onOpen() /*-{
+					jsfunc.@com.google.gwt.core.client.Callback::onSuccess()();
+				}-*/;
 
 				@Override
 				public void onMessage(String msg) {}
@@ -105,9 +105,9 @@ public class WebsockService {
 				public void onMessage(String msg) {}
 
 				@Override
-				public void onClose() {
-					jsfunc.onSuccess(null);
-				}
+				public native void onClose() /*-{
+					jsfunc.@com.google.gwt.core.client.Callback::onSuccess()();
+				}-*/;
 			};
 			ws.addListener(listener);
 		} else {
