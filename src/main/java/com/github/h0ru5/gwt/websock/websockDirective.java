@@ -13,13 +13,14 @@ import elemental.dom.Node;
 import elemental.json.JsonObject;
 import elemental.util.ArrayOf;
 
-@NgDirective("websockGreet")
+@NgDirective("webSocket")
 public class websockDirective implements Directive {
 
-	private static final String NAME_ATTR = "websockGreet";
+	private static final String ATTR_URL = "url";
+	private static final String ATTR_ID = "id";
 	
 	@NgInjected
-	public websockSampleService sample;
+	public WebsockService sample;
 
 	//general initialization
 	@Override
@@ -32,22 +33,16 @@ public class websockDirective implements Directive {
 			final JsonObject attrs) {
 
 		//set default expression
-		String srcExpr = "name";
+		String url = "localhost:1234";
 		
 		//override default if attribute value is given
-		if(attrs.hasKey(NAME_ATTR)) {
-			srcExpr = attrs.get(NAME_ATTR).asString();
+		if(attrs.hasKey(ATTR_URL)) {
+			url = attrs.get(ATTR_URL).asString();
 		}
 
-		//init text in element
-		element.get(0).setTextContent(sample.greet("World"));
-
-		//setup $watch to bind graph's text property to the graph-source
-		scope.$watch(srcExpr, new WatchFunction<String>() {
-			@Override
-			public void exec(String value) {
-				element.get(0).setTextContent(sample.greet(value));
-			}
-		});
+		//get id or set random id
+		element.get(0).getAttribute("id");
+		
+		
 	}
 }
