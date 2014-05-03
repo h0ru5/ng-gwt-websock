@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.angular.client.NgInject;
-import com.google.gwt.core.client.Callback;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.sksamuel.gwt.websockets.Websocket;
 import com.sksamuel.gwt.websockets.WebsocketListener;
+
+import elemental.client.Browser;
 
 @NgInject(name="websocket")
 public class WebsockService {
@@ -14,7 +16,7 @@ public class WebsockService {
 	private Map<String,Websocket> sockets = new HashMap<String, Websocket>();
 
 	public String connect(String url) {
-		String newid = String.format("%d",sockets.size() + 1);
+		String newid = "socket" + (sockets.size() + 1);
 		sockets.put(newid,new Websocket(url));
 		return newid;
 	}
@@ -31,10 +33,10 @@ public class WebsockService {
 
 	public boolean isConnected(String id) {
 		Websocket ws = get(id);
-		if(ws==null)
-			return false;
+		if(ws != null)
+			return ws.getState() == 1;
 		else
-			return ws != null && ws.getState() == 1;
+			return false;
 	}
 
 	public void close(String id) {
@@ -49,7 +51,7 @@ public class WebsockService {
 			ws.addListener(listener);
 	}
 
-	public void onMessage(String id, final Callback<String, Void> jsfunc) {
+	public void onMessage(String id, final JavaScriptObject jsfunc) {
 		Websocket ws = get(id);
 		if(ws!=null) {
 			WebsocketListener listener = new WebsocketListener() {
@@ -59,7 +61,7 @@ public class WebsockService {
 
 				@Override
 				public native void onMessage(String msg) /*-{
-					jsfunc.@com.google.gwt.core.client.Callback::onSuccess(Ljava/lang/String;)(msg);
+					jsfunc(msg);
 				}-*/;
 
 				@Override
@@ -67,18 +69,18 @@ public class WebsockService {
 			};
 			ws.addListener(listener);
 		} else {
-			jsfunc.onFailure(null);
+			debugPrint("Websocket " + id + " is null");
 		}
 	}
 
-	public void onOpen(String id, final Callback<Void, Void> jsfunc) {
+	public void onOpen(String id, final JavaScriptObject jsfunc) {
 		Websocket ws = get(id);
 		if(ws!=null) {
 			WebsocketListener listener = new WebsocketListener() {
 
 				@Override
 				public native void onOpen() /*-{
-					jsfunc.@com.google.gwt.core.client.Callback::onSuccess()();
+					jsfunc();
 				}-*/;
 
 				@Override
@@ -89,11 +91,11 @@ public class WebsockService {
 			};
 			ws.addListener(listener);
 		} else {
-			jsfunc.onFailure(null);
+			debugPrint("Websocket " + id + " is null");
 		}
 	}
 	
-	public void onClose(String id, final Callback<Void, Void> jsfunc) {
+	public void onClose(String id, final JavaScriptObject jsfunc) {
 		Websocket ws = get(id);
 		if(ws!=null) {
 			WebsocketListener listener = new WebsocketListener() {
@@ -106,15 +108,26 @@ public class WebsockService {
 
 				@Override
 				public native void onClose() /*-{
-					jsfunc.@com.google.gwt.core.client.Callback::onSuccess()();
+					jsfunc();
 				}-*/;
 			};
 			ws.addListener(listener);
 		} else {
-			jsfunc.onFailure(null);
+			debugPrint("Websocket " + id + " is null");
 		}
 	}
 
+	public void send(String id, String message) {
+		Websocket ws = get(id);
+		if(ws!=null)
+			ws.send(message);
+		else
+			debugPrint("Websocket " + id + " is null");
+	}
+
+	private void debugPrint(String msg) {
+		Browser.getWindow().getConsole().error(msg);
+	}
 	// TODO promises interface
 
 }

@@ -9,11 +9,11 @@ import com.google.gwt.core.shared.GWT;
  * each one is injected via the given mnemonic in NgName
  * add all exposed Modules to the main function 
  */
-public class websockEntry extends AngularEntryPoint {
+public class WebsockEntry extends AngularEntryPoint {
 
 	@Override
 	protected AngularModule[] main() {
-		return new AngularModule[] { GWT.create(websockModule.class) };
+		return new AngularModule[] { GWT.create(WebsockModule.class) };
 	}
 
 }

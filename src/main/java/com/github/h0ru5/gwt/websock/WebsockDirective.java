@@ -14,7 +14,7 @@ import elemental.json.JsonObject;
 import elemental.util.ArrayOf;
 
 @NgDirective("webSocket")
-public class websockDirective implements Directive {
+public class WebsockDirective implements Directive {
 
 	private static final String ATTR_URL = "url";
 	private static final String ATTR_ID = "id";

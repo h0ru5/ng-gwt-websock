@@ -4,6 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class websockModuleTest {
+public class WebsockModuleTest {
 
 }
