@@ -24,17 +24,29 @@
 		.controller("TestController",['$scope','websocket',function($scope,websocket) {
 			$scope.wsurl = "ws://echo.websocket.org";
 			$scope.log ="";
+			var id = "mysocket";
 			
-			var onOpen= function() { log("is open!\n");};
+			
+			var onOpen= function() {
+					log("now it's open!\n");
+					websocket.send(id,"Buuh!");
+					log("sent message\n");
+			};
 			var onClose= function() { log("is closed!\n");};
-			var onMessage= function(msg) { log("got message " + msg + "!\n");};
+			var onMessage= function(msg) { 
+					log("got message " + msg + "!\n");
+			}
 			
-			var log = function(text) { $scope.log +=text; };
+			var log = function(text) { 
+				$scope.$apply(function(){
+					$scope.log +=text;
+				});
+			};
 			
 			$scope.runTest = function() {
 				log("connecting...\n");
-				var id = "mysocket"
-				websocket.connect($scope.wsurl,id);
+				
+				websocket.connectWithId($scope.wsurl,id);
 				
 				websocket.onMessage(id,onMessage);
 				websocket.onOpen(id,onOpen);
@@ -44,8 +56,7 @@
 				var connected = websocket.isConnected(id);
 				log("connection status is " + connected + "\n");
 				
-				websocket.send(id,"Buuh!");
-				log("sent message\n");
+				
 			};
 		}]);
 		

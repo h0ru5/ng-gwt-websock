@@ -21,21 +21,28 @@ public class WebsockService {
 		return newid;
 	}
 
-	public Websocket connect(String url,String id) {
+	public Websocket connectWithId(String url,String id) {
 		Websocket ws = new Websocket(url);
 		sockets.put(id,ws);
+		ws.open();
 		return ws;
 	}
 
 	public Websocket get(String id) {
+		debugPrint("getting id " + id + ": " + sockets.get(id));
 		return sockets.get(id);
 	}
 
+	public void open(String id) {
+		get(id).open();
+	}
+	
 	public boolean isConnected(String id) {
 		Websocket ws = get(id);
-		if(ws != null)
+		if(ws != null) {
+			debugPrint("ws " + id + " is in state " + ws.getState());
 			return ws.getState() == 1;
-		else
+		} else
 			return false;
 	}
 
@@ -60,12 +67,17 @@ public class WebsockService {
 				public void onOpen() {}
 
 				@Override
-				public native void onMessage(String msg) /*-{
-					jsfunc(msg);
-				}-*/;
+				public void onMessage(String msg) {
+					debugPrint("got message " + msg);
+					sendout(jsfunc,msg);
+				} 
 
 				@Override
 				public void onClose() {}
+				
+				public native void sendout(JavaScriptObject jsfunc, String msg) /*-{
+					jsfunc(msg);
+				}-*/;
 			};
 			ws.addListener(listener);
 		} else {
@@ -79,15 +91,19 @@ public class WebsockService {
 			WebsocketListener listener = new WebsocketListener() {
 
 				@Override
-				public native void onOpen() /*-{
-					jsfunc();
-				}-*/;
+				public  void onOpen() {
+					callNativeCallback(jsfunc);					
+				}
 
 				@Override
 				public void onMessage(String msg) {}
 
 				@Override
 				public void onClose() {}
+				
+				public native void callNativeCallback(JavaScriptObject jsfunc)/*-{
+					jsfunc();
+				}-*/;
 			};
 			ws.addListener(listener);
 		} else {
@@ -107,7 +123,11 @@ public class WebsockService {
 				public void onMessage(String msg) {}
 
 				@Override
-				public native void onClose() /*-{
+				public void onClose() {
+					callNativeCallback(jsfunc);
+				}
+				
+				public native void callNativeCallback(JavaScriptObject jsfunc)/*-{
 					jsfunc();
 				}-*/;
 			};
@@ -119,14 +139,20 @@ public class WebsockService {
 
 	public void send(String id, String message) {
 		Websocket ws = get(id);
-		if(ws!=null)
-			ws.send(message);
-		else
+		debugPrint("sending " + message + " on " + id);
+		if(ws!=null) {
+			if(isConnected(id)) {
+				ws.send(message);
+				debugPrint("sent");
+			} else {
+				debugPrint("cannot send, " + id + " is not connected, state " + ws.getState());
+			}
+		} else
 			debugPrint("Websocket " + id + " is null");
 	}
 
 	private void debugPrint(String msg) {
-		Browser.getWindow().getConsole().error(msg);
+		Browser.getWindow().getConsole().log(msg);
 	}
 	// TODO promises interface
 

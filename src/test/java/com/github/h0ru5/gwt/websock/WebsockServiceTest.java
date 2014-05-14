@@ -8,10 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.github.h0ru5.gwt.websock.WebsockService;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.sksamuel.gwt.websockets.Websocket;
-import com.sksamuel.gwt.websockets.WebsocketListener;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class WebsockServiceTest {
@@ -27,13 +25,13 @@ public class WebsockServiceTest {
 	@Test
 	public void testConnectString() throws Exception {
 		String id = fixture.connect(TESTURL);
-		assertEquals("1", id);
+		assertEquals("socket1", id);
 	}
 
 	@Test
 	public void testConnectStringString() throws Exception {
 		String id = "mysocket";
-		Websocket ws = fixture.connect(TESTURL, id);
+		Websocket ws = fixture.connectWithId(TESTURL, id);
 		Websocket ws2 = fixture.get(id);
 		assertEquals(ws, ws2);		
 	}
