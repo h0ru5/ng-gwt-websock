@@ -12,14 +12,14 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.sksamuel.gwt.websockets.Websocket;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class WebsockServiceTest {
+public class WebSocketServiceTest {
 
 	private static final String TESTURL = "ws://echo.websocket.org";
-	private WebsockService fixture;
+	private WebSocketService fixture;
 
 	@Before
 	public void setUp() throws Exception {
-		fixture = new  WebsockService();
+		fixture = new  WebSocketService();
 	}
 
 	@Test

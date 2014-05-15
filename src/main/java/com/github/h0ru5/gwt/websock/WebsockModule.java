@@ -10,7 +10,7 @@ import com.google.gwt.angular.client.NgName;
  *
  */
 @NgName("websock")
-@NgDepends({WebsockService.class, WebsockDirective.class})
+@NgDepends({WebSocketService.class, WebsockDirective.class})
 public class WebsockModule implements AngularModule {
 
 }

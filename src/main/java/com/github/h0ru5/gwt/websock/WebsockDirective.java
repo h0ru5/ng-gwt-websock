@@ -20,7 +20,7 @@ public class WebsockDirective implements Directive {
 	private static final String ATTR_ID = "id";
 	
 	@NgInjected
-	public WebsockService sample;
+	public WebSocketService sample;
 
 	//general initialization
 	@Override
