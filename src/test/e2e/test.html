@@ -22,7 +22,7 @@
 	<script type="text/ecmascript">
 		angular.module("wstest",["websock"])
 		.controller("TestController",['$scope','websocket',function($scope,websocket) {
-			$scope.wsurl = "ws://echo.websocket.org";
+			$scope.wsurl = "wss://echo.websocket.org";
 			$scope.log ="";
 			var id = "mysocket";
 			
